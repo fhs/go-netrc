@@ -251,8 +251,8 @@ func FindMachine(filename string, name string) (*Machine, os.Error) {
 	if err != nil {
 		return nil, err
 	}
-	var def, m *Machine
-	for _, m = range mach {
+	var def *Machine
+	for _, m := range mach {
 		if m.Name == name {
 			return m, nil
 		}
@@ -260,11 +260,8 @@ func FindMachine(filename string, name string) (*Machine, os.Error) {
 			def = m
 		}
 	}
-	if m == nil && def == nil {
+	if def == nil {
 		return nil, os.NewError("no machine found")
-	}
-	if m != nil {
-		return m, nil
 	}
 	return def, nil
 }
