@@ -234,7 +234,7 @@ func parse(r io.Reader, pos *filePos) ([]*Machine, Macros, os.Error) {
 // If there is a parsing error, an Error is returned.
 func ParseFile(filename string) ([]*Machine, Macros, os.Error) {
 	// TODO(fhs): Check if file is readable by anyone besides the user if there is password in it.
-	fd, err := os.Open(filename, os.O_RDONLY, 0)
+	fd, err := os.Open(filename)
 	if err != nil {
 		return nil, nil, err
 	}
