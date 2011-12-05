@@ -1,7 +1,7 @@
 // Copyright © 2010 Fazlul Shahriar <fshahriar@gmail.com>.
 // See LICENSE file for license details.
 
-// This package implements a parser for netrc file format.
+// Package netrc implements a parser for netrc file format.
 //
 // A netrc file usually resides in $HOME/.netrc and is traditionally used
 // by the ftp(1) program to look up login information (username, password,
@@ -241,7 +241,6 @@ func ParseFile(filename string) ([]*Machine, Macros, os.Error) {
 	defer fd.Close()
 	return parse(fd, &filePos{filename, 1})
 }
-
 
 // ParseFile parses the netrc file identified by filename and returns
 // the Machine named by name. If no Machine with name name is found, the
