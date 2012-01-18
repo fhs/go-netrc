@@ -11,12 +11,13 @@ package netrc
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
 	"io"
 	"io/ioutil"
 	"os"
 	"unicode"
-	"utf8"
+	"unicode/utf8"
 )
 
 const (
@@ -72,7 +73,7 @@ type Error struct {
 	Msg      string // Error message
 }
 
-func (e *Error) String() string {
+func (e *Error) Error() string {
 	return fmt.Sprintf("%s:%d: %s", e.Filename, e.LineNum, e.Msg)
 }
 
@@ -99,7 +100,7 @@ func getWord(b []byte, pos *filePos) (string, []byte) {
 	return string(b[0:i]), b[i:]
 }
 
-func getToken(b []byte, pos *filePos) ([]byte, *token, os.Error) {
+func getToken(b []byte, pos *filePos) ([]byte, *token, error) {
 	word, b := getWord(b, pos)
 	if word == "" {
 		return b, nil, nil // EOF reached
@@ -164,7 +165,7 @@ func appendMach(mach []*Machine, m *Machine) []*Machine {
 	return mach
 }
 
-func parse(r io.Reader, pos *filePos) ([]*Machine, Macros, os.Error) {
+func parse(r io.Reader, pos *filePos) ([]*Machine, Macros, error) {
 	// TODO(fhs): Clear memory containing password.
 	b, err := ioutil.ReadAll(r)
 	if err != nil {
@@ -232,7 +233,7 @@ func parse(r io.Reader, pos *filePos) ([]*Machine, Macros, os.Error) {
 // by an empty machine name. There can be only one ``default'' machine.
 //
 // If there is a parsing error, an Error is returned.
-func ParseFile(filename string) ([]*Machine, Macros, os.Error) {
+func ParseFile(filename string) ([]*Machine, Macros, error) {
 	// TODO(fhs): Check if file is readable by anyone besides the user if there is password in it.
 	fd, err := os.Open(filename)
 	if err != nil {
@@ -245,7 +246,7 @@ func ParseFile(filename string) ([]*Machine, Macros, os.Error) {
 // ParseFile parses the netrc file identified by filename and returns
 // the Machine named by name. If no Machine with name name is found, the
 // ``default'' machine is returned.
-func FindMachine(filename string, name string) (*Machine, os.Error) {
+func FindMachine(filename string, name string) (*Machine, error) {
 	mach, _, err := ParseFile(filename)
 	if err != nil {
 		return nil, err
@@ -260,7 +261,7 @@ func FindMachine(filename string, name string) (*Machine, os.Error) {
 		}
 	}
 	if def == nil {
-		return nil, os.NewError("no machine found")
+		return nil, errors.New("no machine found")
 	}
 	return def, nil
 }
