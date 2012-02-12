@@ -4,7 +4,7 @@
 package netrc_test
 
 import (
-	. "go-netrc.googlecode.com/hg/netrc"
+	. "code.google.com/p/go-netrc/netrc"
 	"testing"
 )
 
