@@ -47,6 +47,7 @@ var keywords = map[string]int{
 	"macdef":   tkMacdef,
 }
 
+// Machine contains information about a remote machine.
 type Machine struct {
 	Name     string
 	Login    string
@@ -54,6 +55,7 @@ type Machine struct {
 	Account  string
 }
 
+// Macros contains all the macro definitions in a netrc file.
 type Macros map[string]string
 
 type token struct {
@@ -67,12 +69,14 @@ type filePos struct {
 	line int
 }
 
+// Error represents a netrc file parse error.
 type Error struct {
 	Filename string
 	LineNum  int    // Line number
 	Msg      string // Error message
 }
 
+// Error returns a string representation of error e.
 func (e *Error) Error() string {
 	return fmt.Sprintf("%s:%d: %s", e.Filename, e.LineNum, e.Msg)
 }
@@ -234,7 +238,7 @@ func ParseFile(filename string) ([]*Machine, Macros, error) {
 // ParseFile parses the netrc file identified by filename and returns
 // the Machine named by name. If no Machine with name name is found, the
 // ``default'' machine is returned.
-func FindMachine(filename string, name string) (*Machine, error) {
+func FindMachine(filename, name string) (*Machine, error) {
 	mach, _, err := ParseFile(filename)
 	if err != nil {
 		return nil, err
