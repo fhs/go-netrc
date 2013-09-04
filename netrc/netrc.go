@@ -153,18 +153,6 @@ func getToken(b []byte, pos *filePos) ([]byte, *token, error) {
 	return b, t, nil
 }
 
-func appendMach(mach []*Machine, m *Machine) []*Machine {
-	n := len(mach)
-	if n+1 > cap(mach) {
-		mach1 := make([]*Machine, 2*cap(mach)+10)
-		copy(mach1[0:n], mach)
-		mach = mach1[0:n]
-	}
-	mach = mach[0 : n+1]
-	mach[n] = m
-	return mach
-}
-
 func parse(r io.Reader, pos *filePos) ([]*Machine, Macros, error) {
 	// TODO(fhs): Clear memory containing password.
 	b, err := ioutil.ReadAll(r)
@@ -193,14 +181,14 @@ func parse(r io.Reader, pos *filePos) ([]*Machine, Macros, error) {
 				return nil, nil, &Error{pos.name, pos.line, "multiple default token"}
 			}
 			if m != nil {
-				mach, m = appendMach(mach, m), nil
+				mach, m = append(mach, m), nil
 			}
 			m = new(Machine)
 			m.Name = ""
 			defaultSeen = true
 		case tkMachine:
 			if m != nil {
-				mach, m = appendMach(mach, m), nil
+				mach, m = append(mach, m), nil
 			}
 			m = new(Machine)
 			m.Name = t.value
@@ -222,7 +210,7 @@ func parse(r io.Reader, pos *filePos) ([]*Machine, Macros, error) {
 		}
 	}
 	if m != nil {
-		mach, m = appendMach(mach, m), nil
+		mach, m = append(mach, m), nil
 	}
 	return mach, mac, nil
 }
