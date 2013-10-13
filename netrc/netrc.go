@@ -235,7 +235,7 @@ func ParseFile(filename string) ([]*Machine, Macros, error) {
 	return parse(fd, &filePos{filename, 1})
 }
 
-// ParseFile parses the netrc file identified by filename and returns
+// FindMachine parses the netrc file identified by filename and returns
 // the Machine named by name. If no Machine with name name is found, the
 // ``default'' machine is returned.
 func FindMachine(filename, name string) (*Machine, error) {
